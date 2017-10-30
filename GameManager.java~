@@ -1,0 +1,190 @@
+//------------------------------------------------------------------//
+// GameManager.java                                                 //
+//                                                                  //
+// Game Manager for 2048                                            //
+//                                                                  //
+// Author:  Ujjwal Gulecha, Alan Kuo                             //
+// Date:    01/25/17                                                //
+//------------------------------------------------------------------//
+//Chengyu Chen 01/29/2017 cs8bwane
+//This GameManager class will connect the movements instructed by the player 
+//as input in the Board class.
+
+
+
+import java.util.*;
+import java.io.*;
+
+public class GameManager {
+    // Instance variables
+    private Board board; // The actual 2048 board
+    private String outputFileName; // File to save the board to when exiting
+
+    // TODO PSA3
+    /*GameManager Constructor
+     *Generate new game by making a new board with a random number and assigned 
+     * boardsize.
+     * @param random: a random number
+     * @param boardSize: size of the board you want to create
+     * @param outputBoard the file of the board you want to save when exit.
+     * */
+    public GameManager(String outputBoard, int boardSize, Random random) {
+        System.out.println("Generating a New Board");
+        board = new Board(random, boardSize);//create a new board by using the
+        //constructor from the Board class.
+        outputFileName = outputBoard;
+        
+
+    }
+
+    // TODO PSA3
+    /* GameManager Constructor
+     * Load a saved game
+     * @param inputBoard an existent board 
+     * @param random: a random number
+     * @param outputBoard the file of the board you want to save when exit.
+     * */
+    public GameManager(String inputBoard, String outputBoard, Random random) throws IOException {
+        System.out.println("Loading Board from " + inputBoard);
+        outputFileName = outputBoard;
+        board = new Board(random, inputBoard);
+    }
+
+    // TODO PSA3
+    /* Main play loop
+     * Takes in input from the user to specify moves to execute
+     * valid moves are:
+     *     k - Move up
+     *     j - Move Down
+     *     h - Move Left
+     *      l - Move Right
+     *     q - Quit and Save Board
+     *
+     * If an invalid command is received then print the controls
+     * to remind the user of the valid moves.
+     *
+     * Once the player decides to quit or the game is over,
+     * save the game board to a file based on the outputFileName
+     * string that was set in the constructor and then return
+     *
+     * If the game is over print "Game Over!" to the terminal
+     * */
+    public void play() throws IOException {
+      printControls();
+      System.out.println(board); //print the board 
+      Direction dir;
+      dir = Direction.UP;
+      
+      Scanner input = new Scanner(System.in);
+       String s = input.nextLine();
+      if ( s.equals("k")) {
+        dir=Direction.UP;
+      }
+      if (s.equals("j") ) {
+        dir=Direction.DOWN;
+      }
+      if(s.equals("h")) {
+        dir=Direction.LEFT;
+      }
+      if(s.equals("l")) {
+        dir=Direction.RIGHT;
+      }
+       if ( board.isGameOver()==true) {
+         System.out.println("Game Over!");
+         board.saveBoard(outputFileName);
+         return;
+       }
+       if(s.equals("q")){
+        board.saveBoard(outputFileName);
+        return;
+      }
+       if (  !s.equals("q") && !s.equals("l")
+          && !s.equals("k") && !s.equals("j")
+          &&!s.equals("h")&&!s.equals("e")
+          &&!s.equals("u")) {
+          System.out.println("Error! Please enter another command");
+          printControls();
+          System.out.println(board);
+   
+       }
+       if(s.equals("e")){
+          board.expand();
+          System.out.println(board);
+         
+       }
+        if(s.equals("u")){
+         System.out.println(board);
+    
+          }
+       
+          board.saveBoard();
+          
+
+      while(true) {
+         s = input.nextLine();
+      
+      if ( s.equals("k")) {
+        dir=Direction.UP;
+      }
+      if (s.equals("j") ) {
+        dir=Direction.DOWN;
+      }
+      if(s.equals("h")) {
+        dir=Direction.LEFT;
+      }
+      if(s.equals("l")) {
+        dir=Direction.RIGHT;
+      }
+       if ( board.isGameOver()==true) {
+         System.out.println("Game Over!");
+         board.saveBoard(outputFileName);
+         return;
+       }
+       if(s.equals("q")){
+        board.saveBoard(outputFileName);
+        return;
+      }
+       if (  !s.equals("q") && !s.equals("l")
+          && !s.equals("k") && !s.equals("j")
+          &&!s.equals("h")&&!s.equals("e")
+          &&!s.equals("u")) {
+          System.out.println("Error! Please enter another command");
+          printControls();
+          System.out.println(board);
+          continue;
+       }
+       if(s.equals("e")){
+          board.expand();
+          System.out.println(board);
+          continue;
+       }
+        if(s.equals("u")){
+       
+          board.undo();
+          System.out.println(board);
+          continue;
+          }
+       
+          board.saveBoard();
+       if (board.move(dir)==true) {
+         board.addRandomTile();
+         System.out.println(board);
+       } 
+        }
+    }
+    
+         
+    
+    
+
+    // Print the Controls for the Game
+    private void printControls() {
+        System.out.println("  Controls:");
+        System.out.println("    k - Move Up");
+        System.out.println("    j - Move Down");
+        System.out.println("    h - Move Left");
+        System.out.println("    l - Move Right");
+        System.out.println("    q - Quit and Save Board");
+        System.out.println();
+    }
+}
